@@ -73,15 +73,18 @@ jobs:
       - name: Deploy
         run: |
           echo "Deploying the project..."
-
   alert:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-      - name: Install curl
-        run: |
-          apt-get update && apt-get install -y curl
       - name: Send Telegram Alert
-        run: >
-          curl -s -X POST
-          https://api.telegram.org/bot7107865918:AAHM8Aoq0mqJgh2RFCMlVeb6PsVJ8ZysfXQ/sendMessage
-          -d "chat_id=-4174824757&text=Alert message goes here."
+        env:
+          TELEGRAM_TOKEN: 7107865918:AAHM8Aoq0mqJgh2RFCMlVeb6PsVJ8ZysfXQ
+          TELEGRAM_CHAT_ID: -4174824757
+        shell: pwsh
+        run: |
+          $url = "https://api.telegram.org/bot$env:7107865918:AAHM8Aoq0mqJgh2RFCMlVeb6PsVJ8ZysfXQ/sendMessage"
+          $body = @{
+            chat_id = $env:-4174824757
+            text = "Alert message goes here."
+          } | ConvertTo-Json
+          Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json"
