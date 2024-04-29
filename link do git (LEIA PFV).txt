@@ -1,0 +1,5 @@
+https://github.com/misakidrummer/Generico.git
+
+para checar o pipeline clique em actions do GitHub 
+
+meu grupo é o 61
