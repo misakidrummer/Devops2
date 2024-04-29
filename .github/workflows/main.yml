@@ -1,0 +1,90 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          
+      - name: Build
+        run: |
+          echo "Building the project..."
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          
+      - name: Test
+        run: |
+          python3 HelloWorld.py
+
+  sast:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Static Application Security Testing (SAST)
+        uses: AppThreat/sast-scan-action@master
+
+  deploy:
+    needs: sast
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          
+      - name: Deploy
+        run: |
+          echo "Deploying the project..."
+
+  alert:
+    runs-on: windows-latest
+    steps:
+      - name: Send Telegram Alert
+        env:
+          TELEGRAM_TOKEN: '7107865918:AAHM8Aoq0mqJgh2RFCMlVeb6PsVJ8ZysfXQ'
+          TELEGRAM_CHAT_ID: '-4174824757'
+        shell: pwsh
+        run: |
+          $url = "https://api.telegram.org/bot${env:TELEGRAM_TOKEN}/sendMessage"
+          $body = @{
+            chat_id = "${env:TELEGRAM_CHAT_ID}"
+            text = "Alert message goes here."
+          } | ConvertTo-Json
+          Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json"
