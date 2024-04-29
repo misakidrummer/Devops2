@@ -1,6 +1,5 @@
 name: CI/CD Pipeline
 on:
-  pull_request:
   push:
     branches:
       - main
@@ -73,18 +72,19 @@ jobs:
       - name: Deploy
         run: |
           echo "Deploying the project..."
+
   alert:
     runs-on: windows-latest
     steps:
       - name: Send Telegram Alert
         env:
-          TELEGRAM_TOKEN: 7107865918:AAHM8Aoq0mqJgh2RFCMlVeb6PsVJ8ZysfXQ
-          TELEGRAM_CHAT_ID: -4174824757
+          TELEGRAM_TOKEN: '7107865918:AAHM8Aoq0mqJgh2RFCMlVeb6PsVJ8ZysfXQ'
+          TELEGRAM_CHAT_ID: '-4174824757'
         shell: pwsh
         run: |
-          $url = "https://api.telegram.org/bot$env:7107865918:AAHM8Aoq0mqJgh2RFCMlVeb6PsVJ8ZysfXQ/sendMessage"
+          $url = "https://api.telegram.org/bot${env:TELEGRAM_TOKEN}/sendMessage"
           $body = @{
-            chat_id = $env:-4174824757
+            chat_id = "${env:TELEGRAM_CHAT_ID}"
             text = "Alert message goes here."
           } | ConvertTo-Json
           Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json"
