@@ -85,6 +85,6 @@ jobs:
           $url = "https://api.telegram.org/bot${env:TELEGRAM_TOKEN}/sendMessage"
           $body = @{
             chat_id = "${env:TELEGRAM_CHAT_ID}"
-            text = "Alert message goes here."
+            text = " ---------------- TESTE DE ENVIO DE NOTIFICAÇÃO PARA O TELEGRAM USANDO A PIPELINE FOI UM SUCESSO, ESTOU MUITO FELIZ -----------"
           } | ConvertTo-Json
           Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json"
