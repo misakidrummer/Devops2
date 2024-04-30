@@ -1,4 +1,4 @@
-https://github.com/misakidrummer/Generico.git
+https://github.com/misakidrummer/Devops2.git
 
 para checar o pipeline clique em actions do GitHub 
 
